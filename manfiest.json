@@ -1,0 +1,16 @@
+{
+  "name": "Voice Billing",
+  "short_name": "Billing",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0a7d2c",
+
+  "icons": [
+    {
+      "src": "2d39a62c-658b-4bf5-940a-8e906710021f.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
