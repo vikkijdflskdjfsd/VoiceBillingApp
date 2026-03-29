@@ -506,7 +506,7 @@ import {
 
 window.saveShop = async function () {
 
-    const name = document.getElementById("shopName").value;
+    const name = document.getElementById("shopName").value.trim();
 
     if (!name) {
         alert("Enter shop name");
@@ -515,11 +515,20 @@ window.saveShop = async function () {
 
     const deviceId = getDeviceId();
 
-    // ✅ Save locally (MAIN)
+    // ✅ Check existing shop from localStorage
+    let existingShop = localStorage.getItem("shopName");
+
+    // 🔴 SAME NAME CHECK
+    if (existingShop && existingShop.toLowerCase() === name.toLowerCase()) {
+        alert("⚠️ Shop already registered on this device");
+        return;
+    }
+
+    // ✅ Save locally
     localStorage.setItem("shopName", name);
 
-    // ✅ Always save new (simple approach)
-    await addDoc(collection(db, "subscriptions"), {
+    // ✅ Save to Firebase (single doc)
+    await setDoc(doc(db, "subscriptions", deviceId), {
         shopName: name,
         deviceId: deviceId,
         plan: "free",
@@ -527,9 +536,11 @@ window.saveShop = async function () {
         createdAt: new Date()
     });
 
-    alert("Saved!");
+    alert("✅ Shop Saved Successfully");
+
     loadShops();
-};async function loadShops() {
+}
+        async function loadShops() {
 
     // ✅ Always take from localStorage first
     let name = localStorage.getItem("shopName");
