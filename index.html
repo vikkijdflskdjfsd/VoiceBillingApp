@@ -540,39 +540,49 @@ window.getDeviceId = function () {
     let id = localStorage.getItem("deviceId");
 
     if (!id) {
-        id = "user_fixed_12345"; // 🔥 SAME ID ALWAYS
+        id = "dev_" + Date.now(); // ✅ unique per device
         localStorage.setItem("deviceId", id);
     }
 
     return id;
 }
-       window.checkAccess = async function () {
+   window.checkAccess = async function () {
 
     const deviceId = getDeviceId();
 
-    const snapshot = await getDocs(collection(db, "subscriptions"));
+    // ✅ DIRECT FILTER FROM FIREBASE
+    const q = query(
+        collection(db, "subscriptions"),
+        where("deviceId", "==", deviceId)
+    );
 
-    let user = null;
+    const snapshot = await getDocs(q);
 
-    snapshot.forEach((doc) => {
-        let data = doc.data();
-
-        if (data.deviceId === deviceId) {
-            user = data;
-        }
-    });
-
-    if (!user) {
+    if (snapshot.empty) {
         alert("पहले shop save करो");
         return false;
     }
 
     let now = new Date();
-    let expiry = user.expiryDate.toDate();
-    expiry.setHours(23,59,59,999);
+    let latestUser = null;
 
+    snapshot.forEach(doc => {
+        let data = doc.data();
+
+        if (!latestUser || data.createdAt.seconds > latestUser.createdAt.seconds) {
+            latestUser = data;
+        }
+    });
+
+    // ✅ SAFE DATE CONVERSION
+    let expiry = latestUser.expiryDate.toDate();
+
+    console.log("NOW:", now);
+    console.log("EXPIRY:", expiry);
+
+    // 🔥 MAIN FIX
     if (now > expiry) {
-        alert("Plan expired");
+        alert("Plan expired ❌");
         return false;
     }
 
