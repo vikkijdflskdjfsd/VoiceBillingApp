@@ -480,8 +480,16 @@
     </script>
     <!-- ✅ PUT YOUR FIREBASE CODE HERE -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+
+import { 
+    getFirestore, 
+    collection, 
+    addDoc, 
+    getDocs,
+    query,        // ✅ ADD
+    where         // ✅ ADD
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBxjJMtI0zic57paeyWaTPGXocU_NggioE",
